@@ -268,12 +268,3 @@ class goods
     }
 
 }
-
-
-// $baseDir = getcwd();
-// $baseDir .= '/img/210';
-// //
-// $goods = new goods();
-// $goods->downloadImg();
-//$goods->downloadImage('http://a.vpimg2.com/upload/merchandise/100890/LILY-112310A20273-1_2.jpg', $baseDir);
-// $goods->getHtmlFromVip();
