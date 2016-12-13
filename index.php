@@ -1,6 +1,7 @@
 <?php
 require('goods.class.php');
-//$config = include('config.php');
+$config = include('config.php');
+$goods = new goods($config);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,12 +32,10 @@ require('goods.class.php');
                 <h3 class="text-muted">Project name</h3>
                 <nav>
                     <ul class="nav nav-justified">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#">Projects</a></li>
-                        <li><a href="#">Services</a></li>
-                        <li><a href="#">Downloads</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li class="active"><a href="#">商品展示</a></li>
+                        <li><a href="#">入库</a></li>
+                        <li><a href="#">出库</a></li>
+                        <li><a href="#">报表</a></li>
                     </ul>
                 </nav>
             </div>
