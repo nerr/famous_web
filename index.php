@@ -3,7 +3,7 @@ require('goods.class.php');
 $config = include('config.php');
 $goods = new goods($config);
 $goodsInfo = $goods->goodsData();
-# var_dump($goodsInfo);
+#var_dump($goodsInfo);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +12,7 @@ $goodsInfo = $goods->goodsData();
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>Title</title>
+        <title>名品网仓特卖</title>
 
         <!-- Bootstrap -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -23,58 +23,159 @@ $goodsInfo = $goods->goodsData();
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style type="text/css">
+            .navbar-static-top {
+                margin-bottom: 19px;
+            }
+            .navbar-header {
+                color: #333;
+            }
+            .footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                /* Set the fixed height of the footer here */
+                height: 60px;
+                background-color: #f5f5f5;
+            }
+            /* Sticky footer styles
+            -------------------------------------------------- */
+            html {
+              position: relative;
+              min-height: 100%;
+            }
+            body {
+              /* Margin bottom by footer height */
+              margin-bottom: 60px;
+            }
+            .footer {
+              position: absolute;
+              top: 60px;
+              bottom: 0;
+              width: 100%;
+              /* Set the fixed height of the footer here */
+              height: 60px;
+              background-color: #f5f5f5;
+            }
+
+
+            /* Custom page CSS
+            -------------------------------------------------- */
+            /* Not required for template or sticky footer method. */
+
+            body > .container {
+              padding: 60px 15px 0;
+            }
+            .container .text-muted {
+              margin: 20px 0;
+            }
+
+            .footer > .container {
+              padding-right: 15px;
+              padding-left: 15px;
+            }
+
+            code {
+              font-size: 80%;
+            }
+
+
+        </style>
     </head>
 
     <body>
-        <div class="container">
-
-            <!-- The justified navigation menu is meant for single line per list item.
-            Multiple lines will require custom code not provided by Bootstrap. -->
-            <div class="masthead">
-                <h3 class="text-muted">Project name</h3>
-                <nav>
-                    <ul class="nav nav-justified">
-                        <li class="active"><a href="#">商品展示</a></li>
-                        <li><a href="#">入库</a></li>
-                        <li><a href="#">出库</a></li>
-                        <li><a href="#">报表</a></li>
+        <!-- Static navbar -->
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">名品</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">商品</a></li>
+                        <li><a href="#about">报表</a></li>
+                        <li><a href="#contact">入库</a></li>
+                        <li><a href="#contact">出库</a></li>
                     </ul>
-                </nav>
+                </div><!--/.nav-collapse -->
             </div>
+        </nav>
 
-        <!-- Jumbotron -->
-        <div class="jumbotron">
-            <h1>Marketing stuff!</h1>
-            <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet.</p>
-            <p><a class="btn btn-lg btn-success" href="#" role="button">Get started today</a></p>
-        </div>
 
-        <!-- Example row of columns -->
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Safari bug warning!</h2>
-                <p class="text-danger">As of v9.1.2, Safari exhibits a bug in which resizing your browser horizontally causes rendering errors in the justified nav that are cleared upon refreshing.</p>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa.</p>
-                <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>
-            </div>
-        </div>
+        <div class="container">
+<?php
+if(count($goodsInfo) > 0){
+    foreach($goodsInfo as $val){
+?>
+            <h3><?php echo $val['goods_num'].' - '.$val['goods_desc']; ?></h3>
+            <hr>
+                <div class="row">
+                    <div class="col-xs-8">
+<?php
+        if(count($val['img']) > 0){
+            foreach($val['img'] as $img){
+?>
+                        <a href="####" class="">
+                            <img id="imageresource" src="img/<?php echo $val['goods_num'].'/'.$img; ?>" style="height: 110px;" alt="" class="img-rounded">
+                        </a>
+<?php
+            }
+        }
+?>
+                    </div>
+                    <div class="col-xs-4">
+                        <p><?php echo '['.$val['goods_sn'].']'; ?></p>
+                        <p></p>
+                        <p><?php echo $val['goods_material']; ?></p>
+                        <p><?php echo '颜色：'.$val['goods_color']; ?></p>
+                        <p>
+                            原价：
+                            <del><?php echo number_format($val['goods_price'], 2); ?></del>
+                        </p>
+                        <p>
+                            <strong>名品折扣价：</strong>
+                            <strong style="color:#F2265F">
+                                <?php echo number_format(round($val['goods_price']*$val['goods_sale']), 2); ?>
+                            </strong>
+                        </p>
+                    </div>
+                </div>
+<?php
+    }
+}
+?>
 
-        <!-- Site footer -->
-        <footer class="footer">
-            <p>&copy; 2016 Company, Inc.</p>
-        </footer>
 
+<!-- Creates the bootstrap modal where the image will appear -->
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+<h4 class="modal-title" id="myModalLabel">Image preview</h4>
+</div>
+<div class="modal-body">
+<img src="" id="imagepreview" style="width: 400px; height: 264px;" >
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
         </div> <!-- /container -->
+
+        <!-- <footer class="footer">
+            <div class="container">
+                <p class="text-muted">@名品特卖</p>
+            </div>
+        </footer> -->
 
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
@@ -84,5 +185,13 @@ $goodsInfo = $goods->goodsData();
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            $(function(){
+                $("#pop").on("click", function() {
+                   $('#imagepreview').attr('src', $('#imageresource').attr('src')); // here asign the image to the modal when the user click the enlarge link
+                   $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
+                });
+            });
+        </script>
     </body>
 </html>

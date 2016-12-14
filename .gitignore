@@ -1,3 +1,5 @@
 img/
 oldcsv/
 config.php
+.DS_Store
+@eaDir/
