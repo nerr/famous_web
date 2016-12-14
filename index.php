@@ -2,6 +2,8 @@
 require('goods.class.php');
 $config = include('config.php');
 $goods = new goods($config);
+$goodsInfo = $goods->goodsData();
+# var_dump($goodsInfo);
 ?>
 <!DOCTYPE html>
 <html lang="en">

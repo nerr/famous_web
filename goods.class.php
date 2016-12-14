@@ -147,7 +147,7 @@ class goods
         $baseDir .= '/img/';
 
         $fullDir = $baseDir.$dirname.'/';
-        var_dump($fullDir);
+        //var_dump($fullDir);
         if(is_dir($fullDir))
         {
             var_dump('alread there');
@@ -259,12 +259,63 @@ class goods
         $strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
         $max = strlen($strPol)-1;
 
-        for($i = 0; $i < $length; $i++){
+        for($i = 0; $i < $length; $i++)
+        {
             //rand($min,$max)生成介于min和max两个数之间的一个随机整数
             $str.= $strPol[rand(0,$max)];
         }
 
         return $str;
+    }
+
+    public static function find($dir)
+    {
+        if(!is_dir($dir)) # 如果$dir变量不是一个目录，直接返回false
+            return false;
+        $dirs[] = '';     # 用于记录目录
+        $files = array(); # 用于记录文件
+        while(list($k,$path)=each($dirs))
+        {
+            $absDirPath = "$dir/$path";     # 当前要遍历的目录的绝对路径
+            $handle = opendir($absDirPath); # 打开目录句柄
+            readdir($handle);               # 先调用两次 readdir() 过滤 . 和 ..
+            readdir($handle);               # 避免在 while 循环中 if 判断
+            while(false !== $item=readdir($handle))
+            {
+                $relPath = "$path/$item";   # 子项目相对路径
+                $absPath = "$dir/$relPath"; # 子项目绝对路径
+                if(is_dir($absPath))        # 如果是一个目录，则存入到数组 $dirs
+                    $dirs[] = $relPath;
+                else                        # 否则是一个文件，则存入到数组 $files
+                    $files[] = $relPath;
+            }
+            closedir($handle); # 关闭目录句柄
+        }
+        return array($dirs,$files);
+    }
+
+    function goodsData()
+    {
+        $images = array();
+        //-- get goods info from database
+        $data = $this->loadGoodsFromDb();
+        //-- get images info
+        $imgBasePath = getcwd().'/img/';
+        $goodsImgPath = '';
+        if(count($data) > 0)
+        {
+            foreach ($data as $key=>$value)
+            {
+                $goodsImgPath = $imgBasePath.$value['goods_num'];
+                //-- check goods images pathinfo
+                if(!is_dir($goodsImgPath))
+                    continue;
+                $img = $this->find($goodsImgPath);
+
+                $data[$key]['img'] = $img[1];
+            }
+        }
+        return $data;
     }
 
 }
