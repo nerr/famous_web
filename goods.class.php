@@ -68,7 +68,7 @@ class goods
     function loadGoodsFromDb()
     {
         $data = array();
-        $sql = 'select * from goods';
+        $sql = 'select * from goods where is_duplicate=0 order by goods_num';
         if ($result = $this->maria->query($sql)) {
             while ($row = $result->fetch_assoc()) {
                 $data[] = $row;

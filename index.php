@@ -109,6 +109,10 @@ $goodsInfo = $goods->goodsData();
 
 
         <div class="container">
+            <div class="jumbotron">
+                <h4>联系方式：胡小姐</h4>
+                <p></p>
+            </div>
 <?php
 if(count($goodsInfo) > 0){
     foreach($goodsInfo as $val){
@@ -120,9 +124,12 @@ if(count($goodsInfo) > 0){
 <?php
         if(count($val['img']) > 0){
             foreach($val['img'] as $img){
+                if(strpos($img, '@eaDir') || strpos($img, '.DS_')){
+                    continue;
+                }
 ?>
-                        <a href="####" class="">
-                            <img id="imageresource" src="img/<?php echo $val['goods_num'].'/'.$img; ?>" style="height: 110px;" alt="" class="img-rounded">
+                        <a href="####" class="" id="pop">
+                            <img id="imageresource" src="img/<?php echo $val['goods_num'].''.$img; ?>" style="height: 110px;" alt="" class="img-rounded">
                         </a>
 <?php
             }
@@ -150,25 +157,23 @@ if(count($goodsInfo) > 0){
     }
 }
 ?>
-
-
-<!-- Creates the bootstrap modal where the image will appear -->
-<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-<h4 class="modal-title" id="myModalLabel">Image preview</h4>
-</div>
-<div class="modal-body">
-<img src="" id="imagepreview" style="width: 400px; height: 264px;" >
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div>
+            <!-- Creates the bootstrap modal where the image will appear -->
+            <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Image preview</h4>
+                        </div>
+                        <div class="modal-body">
+                            <img src="" id="imagepreview" style="width: 400px;" >
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div> <!-- /container -->
 
         <!-- <footer class="footer">
@@ -187,9 +192,10 @@ if(count($goodsInfo) > 0){
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script>
             $(function(){
-                $("#pop").on("click", function() {
-                   $('#imagepreview').attr('src', $('#imageresource').attr('src')); // here asign the image to the modal when the user click the enlarge link
-                   $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
+                $("a#pop").on("click", function() {
+                    //console.log($(this).children("#imageresource").attr('src'));
+                    $('#imagepreview').attr('src', $(this).children("#imageresource").attr('src')); // here asign the image to the modal when the user click the enlarge link
+                    $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
                 });
             });
         </script>
