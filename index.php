@@ -2,7 +2,9 @@
 require('goods.class.php');
 $config = include('config.php');
 $goods = new goods($config);
-$goodsInfo = $goods->goodsData();
+$result = $goods->goodsData();
+$goodsInfo = $result['data'];
+$inv = $result['inv'];
 #var_dump($goodsInfo);
 ?>
 <!DOCTYPE html>
@@ -116,6 +118,7 @@ $goodsInfo = $goods->goodsData();
 <?php
 if(count($goodsInfo) > 0){
     foreach($goodsInfo as $val){
+        if(array_sum($inv[$val['id']]['available']) > 0){
 ?>
             <h3><?php echo $val['goods_num'].' - '.$val['goods_desc']; ?></h3>
             <hr>
@@ -151,9 +154,21 @@ if(count($goodsInfo) > 0){
                                 <?php echo number_format(round($val['goods_price']*$val['goods_sale']), 2); ?>
                             </strong>
                         </p>
+                        <p>
+库存：
+<?php
+foreach($inv[$val['id']]['available'] as $size=>$amount)
+{
+?>
+                        <span><?php echo $size.': '.$amount.' / '; ?></span>
+<?php
+}
+?>
+                        </p>
                     </div>
                 </div>
 <?php
+        }
     }
 }
 ?>

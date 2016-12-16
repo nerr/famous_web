@@ -15,7 +15,7 @@ class goods
         $this->csvFilePath = $config['csv'];
     }
 
-    private function loadCsv($csvpath)
+    private function loadCsv()
     {
         $fileHandel = fopen($this->csvFilePath, 'r');
         while($data = fgetcsv($fileHandel))
@@ -299,6 +299,7 @@ class goods
         $images = array();
         //-- get goods info from database
         $data = $this->loadGoodsFromDb();
+        $inv = $this->getInvertory();
         //-- get images info
         $imgBasePath = getcwd().'/img/';
         $goodsImgPath = '';
@@ -315,7 +316,117 @@ class goods
                 $data[$key]['img'] = $img[1];
             }
         }
-        return $data;
+        return array('data' => $data, 'inv' => $inv);
+    }
+
+    function getGoodsList()
+    {
+        $data = $this->loadGoodsFromDb();
+        if(count($data) > 0)
+        {
+            foreach ($data as $key=>$value)
+            {
+                $goodsList[$value['goods_sn']] = $value['id'];
+            }
+        }
+
+        return $goodsList;
+    }
+
+    function inventory()
+    {
+        $goodList = $this->getGoodsList();
+
+        $inv = array();
+        $csvData = $this->loadCsv();
+        foreach($csvData as $line=>$d)
+        {
+            if($line > 470 || $line < 2)
+                continue;
+            //--
+
+            if($d[1] == '')
+                $sn = $lastSn;
+            else {
+                $sn = substr($d[1], 0, -1);
+                $lastSn = $sn;
+            }
+
+            $inv[] = array(
+                'goods_sn' => $sn,
+                'goods_id' => $goodList[$sn],
+                'goods_size' => $d[4],
+                'amount'   => $d[5],
+                'saled'    => $d[6]
+            );
+        }
+
+        return $inv;
+    }
+
+    function inv2Db()
+    {
+        $csvInv = $this->inventory();
+
+        $sql_insert = "insert into `goods_inventory` (`goods_id`, `goods_size`, `sales_status`) values (";
+
+        foreach($csvInv as $goods)
+        {
+            for($i = 0; $i < $goods['amount']; $i++)
+            {
+                $sql  = $sql_insert.$goods['goods_id'].",'".$goods['goods_size']."',0)";
+                $result = $this->maria->query($sql);
+            }
+        }
+        //var_dump($sql);
+    }
+
+    function invSaledUpdate()
+    {
+        $csvInv = $this->inventory();
+
+        $sql_update = "update `goods_inventory` set `sales_status`=1 ";
+
+        foreach($csvInv as $goods)
+        {
+            if($goods['saled'] > 0)
+            {
+                $sql = $sql_update."where goods_id=".$goods['goods_id'];
+                $sql.= " and goods_size='".$goods['goods_size']."'";
+                $sql.= " limit ".$goods['saled'];
+                $result = $this->maria->query($sql);
+            }
+        }
+        //var_dump($sql);
+    }
+
+
+    function getInvertory()
+    {
+        $inv = array();
+        $sql = "select * from `goods_inventory`";
+        if ($result = $this->maria->query($sql))
+        {
+            while ($row = $result->fetch_assoc())
+            {
+                $data[] = $row;
+            }
+            $result->free();
+        }
+
+        if(count($data) > 0)
+        {
+            foreach($data as $d)
+            {
+                $inv[$d['goods_id']]['amount'][$d['goods_size']]++;
+                if($d['sales_status'] == 1)
+                    $inv[$d['goods_id']]['saled'][$d['goods_size']]++;
+                elseif($d['sales_status'] == 0)
+                    $inv[$d['goods_id']]['available'][$d['goods_size']]++;
+            }
+        }
+
+        return $inv;
     }
 
 }
