@@ -429,39 +429,28 @@ class goods
         return $inv;
     }
 
-
-    /**
-    * Formats a line (passed as a fields  array) as CSV and returns the CSV as a string.
-    * Adapted from http://us3.php.net/manual/en/function.fputcsv.php#87120
-    */
-    private function arrayToCsv( array &$fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false ) {
-        $delimiter_esc = preg_quote($delimiter, '/');
-        $enclosure_esc = preg_quote($enclosure, '/');
-
-        $output = array();
-        foreach ( $fields as $field ) {
-            if ($field === null && $nullToMysqlNull) {
-                $output[] = 'NULL';
-                continue;
-            }
-
-            // Enclose fields containing $delimiter, $enclosure or whitespace
-            if ( $encloseAll || preg_match( "/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field ) ) {
-                $output[] = $enclosure . str_replace($enclosure, $enclosure . $enclosure, $field) . $enclosure;
-            }
-            else {
-                $output[] = $field;
-            }
+    function convert_to_csv($input_array, $output_file_name, $delimiter)
+    {
+        /** open raw memory as file, no need for temp files, be careful not to run out of memory thought */
+        $f = fopen('php://memory', 'w');
+        /** loop through array  */
+        foreach ($input_array as $line) {
+            /** default php csv handler **/
+            fputcsv($f, $line, $delimiter);
         }
-
-        return implode( $delimiter, $output );
+        /** rewrind the "file" with the csv lines **/
+        fseek($f, 0);
+        /** modify header to be downloadable csv file **/
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachement; filename="' . $output_file_name . '";');
+        /** Send file to browser for download */
+        fpassthru($f);
     }
 
     function goodsData2Csv()
     {
-        $data = $this->goodsData();
-
-        return $this->arrayToCsv($data['data']);
+        $data = $this->loadGoodsFromDb();
+        $this->convert_to_csv($data, 'lily.csv', ',');
     }
 
 }

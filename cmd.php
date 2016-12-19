@@ -8,3 +8,5 @@ $goods = new goods($config);
 // var_dump($res[106]);
 
 $res = $goods->goodsData2Csv();
+
+//var_dump($res);
