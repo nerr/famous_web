@@ -3,3 +3,5 @@ oldcsv/
 config.php
 .DS_Store
 @eaDir/
+taobao/
+__pycache__/

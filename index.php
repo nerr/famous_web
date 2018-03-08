@@ -127,7 +127,7 @@ if(count($goodsInfo) > 0){
 <?php
         if(count($val['img']) > 0){
             foreach($val['img'] as $img){
-                if(strpos($img, '@eaDir') || strpos($img, '.DS_')){
+                if(strpos($img, '@eaDir') || strpos($img, '.DS_') || strpos($img, 'Thumbs.db')){
                     continue;
                 }
 ?>
